@@ -11,8 +11,13 @@
 #include <array>
 using namespace ariel;
 using namespace std;
+#include <iostream>
 
 Board board;
+    //INFORMATION : rand() range : rand() % (max_number + 1 - minimum_number) + minimum_number
+    //unsigned int value = 0;
+    //value = value-1;
+    //cout << "value: " << value << "\n"; // prints 4294967295
 
 TEST_CASE("Reading before Posting")
 {
@@ -20,18 +25,30 @@ TEST_CASE("Reading before Posting")
     CHECK(board.read(0, 0, Direction::Horizontal, 2) == string("__"));
     CHECK(board.read(0, 0, Direction::Vertical, 1) == string("_"));
     CHECK(board.read(1, 5, Direction::Vertical, 2) == string("__"));
-    CHECK(board.read(rand() % 100, rand() % 100, Direction::Vertical, 7) == string("_______"));
+    CHECK(board.read(rand() % (4294967295 + 1), rand() % (4294967295 + 1), Direction::Vertical, 7) == string("_______"));
+    CHECK(board.read(4294967295,4294967295, Direction::Vertical, 7) == string("_______")); // limit of unsigned int range
+
+    unsigned int value = 0;
+    value = value-1;
+    CHECK(board.read(value,value, Direction::Vertical, 7) == string("_______")); // limit of unsigned int range // working with all compilers
 }
 
 TEST_CASE("Test Post, Crossing entries")
+
 {
+        unsigned int value = 0;
+    value = value-1;
     CHECK_NOTHROW(board.post(0, 0, Direction::Horizontal, "Buddy"));
     CHECK_NOTHROW(board.post(0, 0, Direction::Vertical, "Buddy"));
     CHECK_NOTHROW(board.post(0, 3, Direction::Vertical, "Sacha"));
     CHECK_NOTHROW(board.post(5, 2, Direction::Horizontal, "S"));
     CHECK_NOTHROW(board.post(4, 6, Direction::Horizontal, "Francky"));
     CHECK_NOTHROW(board.post(1, 6, Direction::Vertical, "Nath"));
-    CHECK_NOTHROW(board.post(2, 2, Direction::Horizontal, "Cassiopea"));
+    CHECK_NOTHROW(board.post(2, 2, Direction::Horizontal, "Cassiopea")); // crossing everything
+
+    CHECK_NOTHROW(board.post(rand() % (value), rand() % (value), Direction::Horizontal, "Cassiopea")); // crossing everything
+
+    board.show();
     
 }
 TEST_CASE("Test Read Vertically")

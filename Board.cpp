@@ -21,16 +21,20 @@ namespace ariel
     {
         _rows = 0;
         _cols = 0;
-        _board.push_back({'_'}); //we are pushing back a new vector containing the char '_'
        }
 
 /*********************************************** ROWS RESIZER METHOD *************************************************************/
     void Board::resize_rows(unsigned int missing_length){
 
+        if(_board.empty()){
+            _board.push_back({'_'});
+        }
+
         // raise board's heigth by missing_length to adapt it
         for (int i = 0; i < missing_length; i++){
-            _board.push_back(vector<char>(_board.at(0).size(), '_')); //pushes back a new vector  of size _board.at(0).size() containing only '_'
+            _board.push_back(vector<char>(_board.at(0).size(), '_')); //pushes back a new vector of size _board.at(0).size() containing only '_'
         }
+
         _rows = _board.size() - 1; //update _rows to new value
 
     }
@@ -38,23 +42,28 @@ namespace ariel
 /********************************************* COLUMNS RESIZER METHOD* ***********************************************************/
     void Board::resize_cols(unsigned int missing_length, unsigned int size){
 
+        if(_board.empty()){
+            _board.push_back({'_'});
+        }
+
         for (unsigned int i = 0; i < size; i++){
             for (int j = 0; j < missing_length; j++){
                 _board.at(i).push_back('_'); // raise board's height by missing_length to adapt it
                 }
             }
-            _cols = _board.at(0).size() - 1; //update _cols to new value
+        
+        _cols = _board.at(0).size() - 1; //update _cols to new value
         
     }
 
 /***************************************************** POST METHOD ****************************************************************/
     void Board::post(unsigned int row, unsigned int column, Direction direction, string message)
-    {
+     {
         if (message.length() == 0){
             return;
         }
 
-        /******************** Firstly: Resize board if too small *********************/
+         /******************** Firstly: Resize board if too small *********************/
         if (direction == Direction::Vertical)
         {
             //Resize board's heigth if too small
@@ -69,18 +78,19 @@ namespace ariel
                 resize_cols(column- _cols,_rows);
             }
         }
+
         else // if Direction::Horizontal
         {
             //Resize board's height if too small
             if (row > _rows)
             {
-                resize_rows(row-_rows);
+               resize_rows(row-_rows);
             }
 
             //Resize board's width if too small
             if (column + message.length() > _cols)
             {
-                resize_cols(column+message.length()-_cols-1,_board.size()); // board_size == _rows+1
+                resize_cols(column+message.length()-_cols-1,_board.size()); // _board.size() == _rows+1
             }
         }
         
@@ -104,7 +114,6 @@ namespace ariel
         {
             return "";
         }
-
 
         // If we start reading outside of the board
         if ((row > _rows && direction == Direction::Vertical) || (column > _cols && direction == Direction::Horizontal))
